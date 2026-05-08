@@ -1,0 +1,65 @@
+# ============================
+# NODE & NPM
+# ============================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+# ============================
+# BACKEND
+# ============================
+backend/dist/
+backend/.env
+backend/.env.local
+backend/.env.production
+backend/prisma/migrations/**/migration.sql
+!backend/prisma/migrations/.gitkeep
+backend/*.log
+
+# ============================
+# FRONTEND (Next.js)
+# ============================
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env.production
+frontend/.env.production.local
+frontend/npm-debug.log*
+
+# ============================
+# DOCKER
+# ============================
+docker-compose.override.yml
+*.dockerignore
+
+# ============================
+# IDE & EDITORES
+# ============================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ============================
+# SISTEMA OPERATIVO
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# LOGS & TEMPORALES
+# ============================
+logs/
+*.log
+tmp/
+temp/
+
+# ============================
+# SECRETOS (NUNCA SUBIR)
+# ============================
+*.pem
+*.key
+*.cert
+secrets/

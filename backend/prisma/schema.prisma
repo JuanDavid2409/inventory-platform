@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // @ts-ignore - Prisma 6.x soporta url en schema
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  roleId       String
+  role         Role     @relation(fields: [roleId], references: [id])
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  permissions Permission[]
+  users       User[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id       String   @id @default(uuid())
+  resource String
+  action   String
+  roles    Role[]
+
+  @@unique([resource, action])
+  @@map("permissions")
+}
+
+model Section {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  isActive    Boolean         @default(true)
+  items       InventoryItem[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("sections")
+}
+
+model InventoryItem {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  value       Decimal  @db.Decimal(10, 2)
+  sectionId   String
+  section     Section  @relation(fields: [sectionId], references: [id])
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("inventory_items")
+}
