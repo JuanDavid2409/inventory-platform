@@ -8,7 +8,9 @@
     "dev": "nodemon --watch src --exec ts-node src/app.ts",
     "seed": "ts-node -r dotenv/config prisma/seed.ts",
     "build": "tsc",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",

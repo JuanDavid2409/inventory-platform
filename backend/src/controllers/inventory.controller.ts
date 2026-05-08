@@ -2,6 +2,19 @@ import { Request, Response } from 'express';
 import { InventoryService } from '../services/inventory.service';
 import { z } from 'zod';
 
+// ✅ Helper para Zod errors (SOLUCIONA el problema de TypeScript)
+const zodErrorResponse = (error: z.ZodError) => ({
+  success: false,
+  error: {
+    code: 'VALIDATION_ERROR' as const,
+    message: 'Validation failed',
+    details: error.issues.map((issue) => ({
+      path: issue.path.join('.'),
+      message: issue.message,
+    })),
+  },
+});
+
 const createInventorySchema = z.object({
   name: z.string().min(2).max(100),
   description: z.string().max(500).optional(),
@@ -48,7 +61,7 @@ export const InventoryController = {
       res.status(201).json({ success: true, item });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: error.issues } });
+        return res.status(400).json(zodErrorResponse(error)); // ✅ FIXED
       }
       console.error('Error creating inventory item:', error);
       res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to create inventory item' } });
@@ -63,7 +76,7 @@ export const InventoryController = {
       res.json({ success: true, item });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: error.issues } });
+        return res.status(400).json(zodErrorResponse(error)); // ✅ FIXED
       }
       if ((error as any).code === 'P2025') {
         return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Inventory item not found' } });

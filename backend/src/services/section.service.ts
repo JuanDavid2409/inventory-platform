@@ -70,14 +70,13 @@ export const SectionService = {
     });
   },
 
-  // Verificar si existe por nombre
   async existsByName(name: string, excludeId?: string) {
-    return prisma.section.count({
-      where: {
-        name: { equals: name, mode: 'insensitive' },
-        isActive: true,
-        ...(excludeId && { NOT: { id: excludeId } }),
-      },
-    });
-  },
+    const where: Prisma.SectionWhereInput = { 
+      name, 
+      isActive: true,
+      ...(excludeId && { NOT: { id: excludeId } })
+    };
+    const count = await prisma.section.count({ where });
+    return count > 0;
+  }
 };
