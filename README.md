@@ -49,14 +49,20 @@ docker compose up -d
 # Aplicar migraciones y seed
 cd backend
 npx prisma migrate dev --name init
+(npx prisma migrate dev)
 npm run seed
 
 # Backend (puerto 4000)
-cd backend && npm run dev
+cd backend
+npm run dev
 
 # Frontend (puerto 3000)
-cd frontend && npm run dev
+cd frontend
+npm run dev
 
 Roles: Admin, Manager, Viewer
 Email: admin@plataforma.com, (crear vía seed), (crear vía seed)
 Contraseña: Admin123!, (crear vía seed), (crear vía seed)
+
+# Prueba
+curl -X POST http://localhost:4000/api/v1/auth/login -H "Content-Type: application/json" -d "{\"email\":\"admin@plataforma.com\",\"password\":\"Admin123!\"}"
