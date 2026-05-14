@@ -20,7 +20,7 @@ inventory-platform/
 └── docs/ # Documentación técnica
 
 
-## ⚡ Inicio Rápido
+## Inicio
 
 ### 1. Requisitos
 - Node.js 18+
@@ -28,11 +28,6 @@ inventory-platform/
 - PostgreSQL (vía Docker)
 
 ### 2. Configuración
-bash
-# Clonar repo
-git clone https://github.com/tu-usuario/inventory-platform.git
-cd inventory-platform
-
 # Backend
 cd backend
 npm install
