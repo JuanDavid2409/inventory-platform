@@ -32,7 +32,8 @@ export default function DashboardPage() {
         api.get('/inventory'),
       ]);
 
-      const sectionsData = sectionsRes.data?.data?.data || sectionsRes.data?.data || [];
+      //const sectionsData = sectionsRes.data?.data?.data || sectionsRes.data?.data || [];
+      const sectionsData = sectionsRes.data?.result?.data || sectionsRes.data?.data || [];
       const inventoryData = inventoryRes.data?.data?.data || inventoryRes.data?.data || [];
 
       const totalValue = inventoryData.reduce((sum: number, item: any) => 

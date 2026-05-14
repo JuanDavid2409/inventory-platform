@@ -8,6 +8,7 @@ import { Plus, Edit, Trash2, Search, Loader2, X, Package } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import toast from 'react-hot-toast';
 
 //Esquema de validación
 const inventorySchema = z.object({
@@ -51,7 +52,7 @@ export default function InventoryPage() {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<InventoryFormData>({
-    resolver: zodResolver(inventorySchema) as any, // ✅ Fix para error de tipos
+    resolver: zodResolver(inventorySchema) as any, //Fix para error de tipos
     defaultValues: { name: '', description: '', value: 0, sectionId: '' },
   });
 
@@ -72,9 +73,12 @@ export default function InventoryPage() {
         api.get('/sections'),
       ]);
 
-      const itemsData = itemsRes.data?.data?.data || itemsRes.data?.data || [];
-      const sectionsData = sectionsRes.data?.data?.data || sectionsRes.data?.data || [];
+      const itemsData = itemsRes.data?.result?.items || itemsRes.data?.result?.data || itemsRes.data?.data?.data || itemsRes.data?.data || [];
+      const sectionsData = sectionsRes.data?.result?.data || sectionsRes.data?.data?.data || sectionsRes.data?.data || [];
 
+      console.log('Items cargados:', itemsData);
+      console.log('Secciones cargadas:', sectionsData);
+      
       setItems(itemsData);
       setSections(sectionsData.map((s: any) => ({ id: s.id, name: s.name })));
     } catch (err) {
@@ -110,13 +114,15 @@ export default function InventoryPage() {
     try {
       if (editingItem) {
         await api.patch(`/inventory/${editingItem.id}`, data);
+        toast.success("Item actualizado correctamente");
       } else {
         await api.post('/inventory', data);
+        toast.success("Item creado correctamente");
       }
       setModalOpen(false);
       loadData(search);
     } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Error al guardar el item');
+      toast.error(err.response?.data?.error?.message || 'Error al guardar el item');
     }
   };
 
@@ -125,9 +131,10 @@ export default function InventoryPage() {
     if (!confirm('¿Estás seguro de eliminar este item?')) return;
     try {
       await api.delete(`/inventory/${id}`);
+      toast.success("Item eliminado correctamente")
       loadData(search);
     } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Error al eliminar');
+      toast.error(err.response?.data?.error?.message || 'Error al eliminar');
     }
   };
 
@@ -324,7 +331,7 @@ export default function InventoryPage() {
               )}
             </div>
 
-            {/* Sección */}
+            {/* Seccion */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Sección *
@@ -332,13 +339,20 @@ export default function InventoryPage() {
               <select
                 {...register('sectionId')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
+                defaultValue=""
               >
-                <option value="" className="text-gray-400">Selecciona una sección</option>
-                {sections.map((sec) => (
-                  <option key={sec.id} value={sec.id} className="text-gray-900">
-                    {sec.name}
-                  </option>
-                ))}
+                <option value="" disabled>
+                  Selecciona una sección
+                </option>
+                {sections.length === 0 ? (
+                  <option disabled>Cargando secciones...</option>
+                ) : (
+                  sections.map((sec) => (
+                    <option key={sec.id} value={sec.id}>
+                      {sec.name}
+                    </option>
+                  ))
+                )}
               </select>
               {errors.sectionId && (
                 <p className="text-red-500 text-xs mt-1">{errors.sectionId.message}</p>

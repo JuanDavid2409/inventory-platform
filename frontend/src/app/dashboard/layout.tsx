@@ -44,6 +44,7 @@ export default function DashboardLayout({
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Secciones', href: '/dashboard/sections', icon: Package },
     { name: 'Inventario', href: '/dashboard/inventory', icon: Boxes },
     // Puedes agregar más aquí: { name: 'Secciones', href: '/dashboard/sections', icon: Package },
   ];
